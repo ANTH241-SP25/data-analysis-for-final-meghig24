@@ -1,29 +1,484 @@
 ---
-title: "data_analysis"
+title: "data_analysis.bivastat"
 output: html_document
-date: "2025-04-15"
+date: "2025-04-19"
 ---
-Replace this empty file with your data analysis .rmd file we created and started working on 04/15 in class! To do this go to your data cleaning file in R studio:
-File >> Save As >> Github >> data_analysis[yourname] (folder created by Github) >> final_project
 ```{r}
-#this file is meant to be empty
+NHANES2017_18 <- read.csv("/Users/meghanhigginshaas/Documents/NHANES 2017_2018 downloades/clean_data")
+library(dplyr)
+library(ggplot2)
 ```
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+#descriptive stats of RFITP:
+library(dplyr)
+NHANES2017_18 %>% 
+  group_by(RFITP) %>% 
+  summarize(mean(RFITP), sd(RFITP), count=n())
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+HHInco_Btable <- with(NHANES2017_18, table(HHInco))
+HHInco_Btable
+
+
+library(ggplot2)
+ggplot(NHANES2017_18, aes(x=HHInco))+
+  geom_bar()+
+  labs(title="Simple Bar Chart",
+       x="Income",
+       y="Frequency?")
+
+prop.table(HHInco_Btable)*100
+
+library(tidyverse)
+
+```
+```{r}
+Race_BaTable <- with(NHANES2017_18, table(Race))
+Race_BaTable
+
+library(ggplot2)
+ggplot(NHANES2017_18, aes(x=Race))+
+  geom_bar()+
+  labs(title="Simple Bar Chart",
+       x="Race",
+       y="Frequency?")
+
+prop.table(Race_BaTable)*100
+
+```
+Running HH Income by Race
+```{r}
+HHInco_Race <- xtabs(~ HHInco + Race, data=NHANES2017_18)
+HHInco_Race
+
+prop.table(HHInco_Race)*100
+
+ggplot(NHANES2017_18, aes(HHInco, fill=Race))+
+  geom_bar(position="dodge")+
+  labs(title="HH Income by Race", x="HHIncome", y="Race")
+
+
+```
+Running HH Income by Education
+```{r}
+HHInco_Education <- xtabs(~ HHInco + Education, data=NHANES2017_18)
+HHInco_Education
+
+prop.table(HHInco_Education)*100
+
+ggplot(NHANES2017_18, aes(HHInco, fill=Education))+
+  geom_bar(position="dodge")+
+  labs(title="HH Income by Education", x="HHIncome", y="Education")
+```
+Running HHInco by Marital Status
+```{r}
+HHInco_MaritalStat <- xtabs(~ HHInco + MaritalStat, data=NHANES2017_18)
+HHInco_MaritalStat
+
+ggplot(NHANES2017_18, aes(HHInco, fill=MaritalStat))+
+  geom_bar(position="stack")+
+  labs(title="HH Income by Marital Status", x="HHIncome", y="Marital Status")
+
+```
+Running HHIncome by Citizenship Status
+```{r}
+HHInco_CitizStat <- xtabs(~ HHInco + CitizStat, data=NHANES2017_18)
+HHInco_CitizStat
+
+prop.table(HHInco_CitizStat)*100
+```
+
+Running HHIncome by Gender
+```{r}
+HHInco_Gender <- xtabs(~ HHInco + Gender, data=NHANES2017_18)
+HHInco_Gender
+
+prop.table(HHInco_Gender)*100
+```
+RUnning HHIncome by Spouses Education
+```{r}
+HHInco_SpEducation <- xtabs(~ HHInco + SpEducation, data=NHANES2017_18)
+HHInco_SpEducation
+prop.table(HHInco_SpEducation)*100
+```
+Running HHIncome by HHNUmber
+```{r}
+HHInco_HHNum <- xtabs(~ HHInco + HHNum, data=NHANES2017_18)
+HHInco_HHNum
+
+```
+Running HHIncome by Family Number
+```{r}
+HHInco_FamNum <- xtabs(~ HHInco + FamNum, data=NHANES2017_18)
+HHInco_FamNum
+prop.table(HHInco_FamNum)*100
+```
+Running HHIncome by Ratio to Poverty Level
+```{r}
+HHInco_RFITP <- xtabs(~ HHInco + RFITP, data=NHANES2017_18)
+HHInco_RFITP
+prop.table(HHInco_RFITP)*100
+```
+Ruining HHIncome by HHeducation
+```{r}
+HHInco_HHEd <- xtabs(~ HHInco + HHEducation, data=NHANES2017_18)
+HHInco_HHEd
+prop.table(HHInco_HHEd)*100
+```
+Running HHIncome by HHMarital Status
+```{r}
+HHInco_HHMarStat <- xtabs(~ HHInco + HHMarStat, data=NHANES2017_18)
+HHInco_HHMarStat
+prop.table(HHInco_HHMarStat)*100
+```
+
+
+
+
+Running HHIncome by Gender, and by Race
+```{r}
+HHInco_Gender_Race <- xtabs(~ HHInco + Gender + Race, data=NHANES2017_18)
+HHInco_Gender_Race
+
+prop.table(HHInco_Gender_Race)
+
+```
+
+
+
+
+T-test
+#1a
+t.test(Contvar~Catvar, var.equal=TRUE, data=)
+```{r}
+t.test(RFITP~Gender, var.equal=TRUE, data=NHANES2017_18)
+
+```
+#1b 
+results:From running this t-test to look at the p-value and test the alternative hypothesis, we can see if the relationship between Gender and our ratio to poverty levels are significant. The alternative-hypothesis that we are testing here is how Gender can have a difference/significant relationship to one's ratio to poverty level. Based on our given p-value, that being 0.05, it is basically significant, being borderline though, because having a p-value of less than (or equal to in this case) of 0.05. This is rejecting the null hypothesis of saying there is no relationship between Gender and RFITP levels. 
+#1c
+graph to show the t-test
+```{r}
+library(ggplot2)
+ggplot(NHANES2017_18, aes(x=Gender, y=RFITP))+
+  geom_boxplot(fill="pink")+
+  labs(x="Gender", y="Ratio to Poverty Level", title="Gender by Ration to Poverty Level")
+```
+
+
+Chi-Square Test
+#1a
+~running HHIncome with Race
+```{r}
+HHInco_Race <- xtabs(~ HHInco + Race, data=NHANES2017_18)
+HHInco_Race
+prop.table(HHInco_Race)*100
+
+chisq.test(HHInco_Race)
+```
+#1b
+Results: The p-value of this study is extremely less than 0.05, being 2.2e-16, showing that it is significant and there is a significant relation between race and household income.The alternative hypothesis of this test is having a significant relationship between household income and race. The p-value being extremely lower than 0.05, supports and accepts this alternative hypothesis while rejecting the null hypothesis of saying there is no relationship between household income and race. 
+#1c
+Graph [grouped bar chart] to show first chi-sq test
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=Race))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("coral4","coral3", "coral2", "brown3", "brown1", "sandybrown"))
+  labs(x="Household Income", y="Race", title="Household Income By Race")
+```
+
+
+#2a
+Running HHIncome with Education
+```{r}
+HHInco_Education <- xtabs(~ HHInco + Education, data=NHANES2017_18)
+HHInco_Education
+prop.table(HHInco_Education)*100
+
+chisq.test(HHInco_Education)
+```
+#2b
+Results: The p-value of this study is extremely less than 0.05, being 2.2e-16, showing that it is significant and there is a significant relation between education levels and household income.The alternative hypothesis of this test is having a significant relationship between household income and education. The p-value being extremely lower than 0.05, supports and accepts this alternative hypothesis while rejecting the null hypothesis of saying there is no relationship between household income and education levels. 
+#2c
+Graph for second chi test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=Education))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("darkseagreen4","darkseagreen2","darkgreen", "darkseagreen", "seagreen"))
+  labs(x="Household Income", y="Education", title="Household Income By Education")
+```
+
+
+#3a 
+Running HHIncome with Marital Status
+```{r}
+HHInco_MaritalStat <- xtabs(~ HHInco + MaritalStat, data=NHANES2017_18)
+HHInco_MaritalStat
+chisq.test(HHInco_MaritalStat)
+```
+#3b
+Results: Similar to the chi-squared tests that we have previously run, this test shows significance and displays a p-value that extremely lower than 0.05, that being 1.031e-10. The alternative hypothesis is therefore supported, that being that Household income has a significant relationship with and has a difference to Marital status. Because of this, the null hypothesis, stating that household income and marital status have no relationship, is rejected and not supported. 
+
+#3c
+Graph for third chi-test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=MaritalStat))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("cadetblue4","cadetblue2", "cadetblue3", "cadetblue", "lightslategrey", "lightsteelblue"))
+  labs(x="Household Income", y="Marital Status", title="Household Income By Marital Status")
+```
+
+
+#4a
+Running HHIncome with Citizenship Status
+```{r}
+HHInco_CitizStat <- xtabs(~ HHInco + CitizStat, data=NHANES2017_18)
+HHInco_CitizStat
+chisq.test(HHInco_CitizStat)
+```
+#4b
+Results: The alternative hypothesis of household income having a significant relationship with citizenship status is supported through these results because of the extremely low p-value. The p-value in this results is 2e-14, being significantly lower than 0.05. Therefore, these results reject the null hypothesis of saying that there is no relationship and difference between household income and citizenship status. 
+#4c
+Graph with fourth chi-test:
+```{r}
+  ggplot(NHANES2017_18, aes(x=HHInco, fill=CitizStat))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("firebrick4","firebrick3"))
+  labs(x="Household Income", y="Citizenship Status", title="Household Income By Citizenship Status")
+```
+
+
+#5a
+Running HHIncome with Gender
+```{r}
+HHInco_Gender <- xtabs(~ HHInco + Gender, data=NHANES2017_18)
+HHInco_Gender
+chisq.test(HHInco_Gender)
+```
+#5b
+Results: Unlike the chi-squared tests we have run 
+#5c
+Graph to show fifth chi-test
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=Gender))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("darkgreen","aquamarine4"))
+  labs(x="Household Income", y="Gender", title="Household Income By Gender")
+```
+
+
+#6a
+Running HHIncome with Spouses' Education
+```{r}
+HHInco_SpEducation <- xtabs(~ HHInco + SpEducation, data=NHANES2017_18)
+HHInco_SpEducation
+prop.table(HHInco_SpEducation)*100
+chisq.test(HHInco_SpEducation)
+```
+#6b
+Results:
+#6c
+Graph to show sixth chi-squared test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=SpEducation))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("plum4","plum3", "plum2"))
+  labs(x="Household Income", y="Spouse's Education", title="Household Income By Spouse's Education")
+```
+
+
+
+
+
+#8a
+Running HHIncome with Family Number
+```{r}
+HHInco_FamNum <- xtabs(~ HHInco + FamNum, data=NHANES2017_18)
+HHInco_FamNum
+prop.table(HHInco_FamNum)*100
+chisq.test(HHInco_FamNum)
+```
+#8b
+Results:
+#8c
+Graph to show eigth chi-test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=FamNum))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("lightsalmon4","lightsalmon3", "lightsalmon2", "darkorange", "lightsalmon", "darkorange3", "darkorange2"))
+  labs(x="Household Income", y="Family Number", title="Household Income By Family Number")
+```
+
+#9a
+Running HHIncome with Ration to Poverty Level
+```{r}
+HHInco_RFITP <- xtabs(~ HHInco + RFITP, data=NHANES2017_18)
+HHInco_RFITP
+prop.table(HHInco_RFITP)*100
+chisq.test(HHInco_RFITP)
+```
+#9b
+Results:
+#9c
+Graph to show ninth chi-test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=RFITP))+
+  geom_bar(position="dodge", fill="darkslateblue")+
+  labs(x="Household Income", y="Ratio to Poverty Level", title="Household Income By RFITP")
+```
+
+
+#10a
+Running HHIncome with HHEducation
+```{r}
+HHInco_HHEd <- xtabs(~ HHInco + HHEducation, data=NHANES2017_18)
+HHInco_HHEd
+prop.table(HHInco_HHEd)*100
+chisq.test(HHInco_HHEd)
+```
+#10b
+Results: 
+#10c
+Graph to show tenth chi-test:
+```{r}
+ggplot(NHANES2017_18, aes(x=HHInco, fill=HHEducation))+
+  geom_bar(position="dodge")+
+  scale_fill_manual(values=c("goldenrod2","gold", "gold2"))
+  labs(x="Household Income", y="Household Education", title="Household Income By Household Education")
+```
+
+
+ANOVA/KW Tests:
+?
+#1
+Dunn Test
+dunn.test(x=data$contvar, g=data$catvar, kw=TRUE)
+```{r}
+library(dunn.test)
+NHANES2017_18 %>% 
+  group_by(Education) %>% 
+  summarize(mean(RFITP), sd(RFITP), count=n())
+dunn.test(x=NHANES2017_18$RFITP, g=NHANES2017_18$Education, kw=TRUE)
+```
+#1b
+Results:
+#1c
+Graph of first dunn test:
+```{r}
+ggplot(NHANES2017_18, aes(x=Education, y=RFITP))+
+  geom_boxplot(fill="salmon")+
+  labs(x="Education level",
+       y="Ratio to Poverty Levels",
+       title="Ratio to Poverty by Education")
+```
+
+#2
+dunn test part two...running RFITP by Family Number
+```{r}
+library(dunn.test)
+NHANES2017_18 %>% 
+  group_by(FamNum) %>% 
+  summarize(mean(RFITP), sd(RFITP), count=n())
+dunn.test(x=NHANES2017_18$RFITP, g=NHANES2017_18$FamNum, kw=TRUE)
+```
+#2b 
+Results:
+#2c
+Graph to show second dunn test:
+```{r}
+ggplot(NHANES2017_18, aes(x=FamNum, y=RFITP))+
+  geom_boxplot(fill="orchid4")+
+  labs(x="Family Number",
+       y="Ratio to Poverty Levels",
+       title="Ratio to Poverty by Family Number")
+```
+
+#3
+Dunn test part three...running RFITP by Race
+```{r}
+library(dunn.test)
+NHANES2017_18 %>% 
+  group_by(Race) %>% 
+  summarize(mean(RFITP), sd(RFITP), count=n())
+dunn.test(x=NHANES2017_18$RFITP, g=NHANES2017_18$Race, kw=TRUE)
+```
+#3b 
+Results:
+#2c
+Graph to show third dunn test:
+```{r}
+ggplot(NHANES2017_18, aes(x=Race, y=RFITP))+
+  geom_boxplot(fill="seagreen4")+
+  labs(x="Race",
+       y="Ratio to Poverty Levels",
+       title="Ratio to Poverty Level by Race")
+```
+
+
+Linear Regression Model:
+1) predicting the continuous with continuous (RFITP with SEQN)
+```{r}
+library(dplyr)
+RFITP_SEQN_fit <- lm(RFITP~SEQN, data=NHANES2017_18)
+summary(RFITP_SEQN_fit)
+```
+Results: 
+regression equation: RFITP = 
+multiple r-squared value: 
+p-value:
+analysis of relationship: 
+
+Graph for linear regression model: *scatter plot*
+```{r}
+library(ggplot2)
+library(dplyr)
+ggplot(NHANES2017_18, aes(x=RFITP, y=SEQN))+
+  geom_point(fill="salmon")+
+  labs(x="Ratio To Poverty Levels", y="", title="Ratio To Poverty Levels")
+#OR
+ggplot(NHANES2017_18, aes(x=RFITP, y=SEQN))+
+  geom_boxplot(fill="cornflowerblue")+
+  labs(x="Ratio to Poverty Levels", y="",
+       title="Ratio to Poverty Level by Numbers")
+```
+
+Odds Ratio:
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+install.packages("epitools")
+library(epitools)
+install.packages("ggmosaic")
+library(ggmosaic)
+```
+```{r}
+#odds_table_name <- table(data$IndVar, data$DepVar)
+HHInco_Race_odds_table <- table(NHANES2017_18$HHInco, NHANES2017_18$Race)
+#replaced 0s with 1s to run oddsratio (malena did this)
+HHInco_Race_odds_table[HHInco_Race_odds_table ==0] <-1
+oddsratio(HHInco_Race_odds_table)
+
+ggplot(data=NHANES2017_18)+
+  geom_mosaic(aes(x=product(HHInco), fill=Race),na.rm=TRUE, 
+              show.legend=FALSE)+
+  labs(title="Household Income by Race", x="Household Income", y="Race")
+```
+results: In this graph and odds ratio, it seems that there is a dominating display of Non-Hispanic White responses, going across the board and as the household income levels increase. Non-Hispanic Black and Non-Hispanic Asian have similar patterns as the income increases, seeming to have a strong presence during the lowest/lower income and then varying in presence, but lowering a slight bit and showing negative presence as the income goes up. This graph loosely shows the odds of having a relationship between income and race, the exact data though will help us make any valid claims on the odds of Household Income and race and if they reflect off each other. 
+
+```{r}
+HHInco_Education_odds_table <- table(NHANES2017_18$HHInco, NHANES2017_18$Education)
+#replaced 0s with 1s to run oddsratio (malena did this)
+HHInco_Education_odds_table[HHInco_Education_odds_table ==0] <-1
+oddsratio(HHInco_Education_odds_table)
+
+ggplot(data=NHANES2017_18)+
+  geom_mosaic(aes(x=product(HHInco), fill=Education),na.rm=TRUE, 
+              show.legend=FALSE)+
+  labs(title="Household Income by Education", x="Household Income", y="Education")
+```
+results: The data that is displayed in this graph is really telling because it exemplifies the evolution of education with the increase in household income. The most revealing part of this graph is under the College Graduate of education and how that is the largest within the 100k income and then goes back down when it hits the lower income, only to increase in presence as the income increases. The other levels of education reflect that there are no responses for those who are a College Graduate and above in the 0-4.9k income level, showing that there is a minimal when reaching a certain level of education and only having those levels increase as the income increases, showing a clear correlation. This graph is showing how the odds of having a relationship between a higher Education level is signficant and correlates with the odds of having a higher income. 
+
+
